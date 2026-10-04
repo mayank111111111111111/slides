@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Social Network — Growth vs Fixed Mindset</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1877F2;--dim:#8ab4f8aa;--txt:#eef2f7;--card:#0d1420;--line:#1877f233}
+  html,body{height:100%;background:#000;color:var(--txt);font-family:'Inter',sans-serif;overflow:hidden}
+  .deck{position:relative;width:100vw;height:100vh}
+  .slide{position:absolute;inset:0;padding:7vh 8vw;display:none;flex-direction:column;justify-content:center;background:radial-gradient(1200px 700px at 70% 20%,#0a1a33 0%,#000 70%)}
+  .slide.active{display:flex;animation:fade .6s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .r{opacity:0;animation:rise .7s ease forwards}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  .d1{animation-delay:.1s}.d2{animation-delay:.25s}.d3{animation-delay:.4s}.d4{animation-delay:.55s}.d5{animation-delay:.7s}
+
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.35em;color:var(--blue);text-transform:uppercase;margin-bottom:1.4rem}
+  .kicker::before{content:'> ';color:#fff}
+  h1{font-size:clamp(2.4rem,6vw,5.2rem);font-weight:900;line-height:1.05;letter-spacing:-.02em}
+  h2{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:1.6rem}
+  h1 em,h2 em{font-style:normal;color:var(--blue)}
+  .lede{font-size:clamp(1rem,1.6vw,1.25rem);font-weight:300;color:#c6d3e3;max-width:60ch;line-height:1.6}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  .bignum{position:absolute;right:4vw;bottom:3vh;font-family:'JetBrains Mono',monospace;font-size:clamp(4rem,10vw,9rem);font-weight:700;color:#ffffff08;line-height:1;user-select:none}
+  .speaktag{position:absolute;left:8vw;bottom:3vh;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#ffffff55;letter-spacing:.12em}
+  .speaktag b{color:var(--blue)}
+
+  ul.big{list-style:none;font-size:clamp(1rem,1.7vw,1.3rem);line-height:2;font-weight:300}
+  ul.big li::before{content:'▸ ';color:var(--blue)}
+  ul.big b{color:#fff;font-weight:600}
+
+  table{width:100%;border-collapse:collapse;font-size:clamp(.8rem,1.25vw,1.05rem);font-weight:300}
+  th{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);text-align:left;padding:.7rem .9rem;border-bottom:1px solid var(--blue)}
+  td{padding:.7rem .9rem;border-bottom:1px solid var(--line);color:#c6d3e3;vertical-align:top;line-height:1.45}
+  td:first-child{color:#fff;font-weight:600;white-space:nowrap}
+
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.4rem 1.6rem}
+  .card .ic{font-size:1.6rem;margin-bottom:.5rem}
+  .card h3{font-size:1.05rem;font-weight:600;margin-bottom:.35rem}
+  .card p{font-size:.9rem;font-weight:300;color:#9fb3cc;line-height:1.5}
+  .card p em{color:var(--blue);font-style:normal}
+
+  .chain{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;font-family:'JetBrains Mono',monospace;font-size:clamp(.75rem,1.3vw,1rem)}
+  .chain span{background:var(--card);border:1px solid var(--line);padding:.6rem 1rem;border-radius:8px}
+  .chain span.hl{background:var(--blue);color:#000;font-weight:700;border-color:var(--blue)}
+  .chain i{color:var(--blue);font-style:normal}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.5rem}
+  .panel h3{font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
+  .panel.bad h3{color:#ff5b5b}.panel.good h3{color:var(--blue)}
+  .panel ul{list-style:none;font-size:.95rem;font-weight:300;line-height:1.9;color:#c6d3e3}
+  .panel li::before{content:'– ';color:#666}
+  .panel.good li::before{content:'✓ ';color:var(--blue)}
+
+  .hook{font-size:clamp(1.6rem,3.6vw,3.2rem);font-weight:800;line-height:1.25;max-width:26ch}
+  .hook .hl{background:var(--blue);color:#000;padding:.05em .18em;border-radius:6px}
+
+  .code{background:#050a12;border:1px solid var(--line);border-radius:12px;padding:1.6rem 2rem;font-family:'JetBrains Mono',monospace;font-size:clamp(.8rem,1.4vw,1.1rem);line-height:2;color:#9fb3cc}
+  .code .ln{color:#3a4a63;margin-right:1.4rem;user-select:none}
+  .code .kw{color:var(--blue);font-weight:700}.code .str{color:#7ee787}.code .cm{color:#565f73}
+
+  .bigstat{font-family:'JetBrains Mono',monospace;font-size:clamp(2.5rem,7vw,6rem);font-weight:700;color:var(--blue);line-height:1}
+  .bigstat small{font-size:.35em;color:#fff}
+
+  /* HUD */
+  #bar{position:fixed;top:0;left:0;height:3px;background:var(--blue);width:0;transition:width .5s;z-index:10}
+  .hud{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.15em;color:#ffffff66;z-index:10}
+  .dots{display:flex;gap:.5rem}
+  .dot{width:7px;height:7px;border-radius:50%;background:#ffffff22;cursor:pointer;transition:.3s}
+  .dot.on{background:var(--blue);transform:scale(1.3)}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="deck">
+
+<!-- 1 TITLE -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Case Study · Growth Mindset vs Fixed Mindset</div>
+    <h1 class="r d2">THE SOCIAL<br>NETWORK <em>(2010)</em></h1>
+    <p class="lede r d3 mono" style="margin-top:1.2rem">// Treating a movie as an engineering case</p>
+    <p class="lede r d4" style="margin-top:1.6rem;font-size:.95rem">Group ___ · Roll Numbers · Semester/Section · Subject · Faculty · Date</p>
+  </div>
+  <div class="bignum">01</div><div class="speaktag"><b>Speaker 1</b> · 0:15</div>
+</section>
+
+<!-- 2 HOOK -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">The Hook</div>
+    <p class="hook r d2">"What if the biggest bug at Facebook wasn't in the code… but in <span class="hl">the mindset of its leaders?</span>"</p>
+    <p class="lede r d3" style="margin-top:2rem">3 billion users. One co-founder diluted <b style="color:#fff">34% → 0.03%</b>. No meeting. No feedback. No second chance.</p>
+  </div>
+  <div class="bignum">02</div><div class="speaktag"><b>Speaker 1</b> · 0:30</div>
+</section>
+
+<!-- 3 CASE & CONFLICT -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">The Case</div>
+    <h2 class="r d2">Harvard dorm, 2003 → Palo Alto startup.<br>How should Facebook <em>grow?</em></h2>
+    <div class="code r d3">
+      <div><span class="ln">01</span><span class="kw">Eduardo (CFO):</span> <span class="str">"Put ads on the page — we need revenue."</span></div>
+      <div><span class="ln">02</span><span class="kw">Mark & Sean:</span> <span class="str">"Scale first. We don't even know what it is yet."</span></div>
+    </div>
+    <p class="lede r d4" style="margin-top:1.5rem">The real problem: <b style="color:#fff">not the business decision — how the disagreement was handled.</b></p>
+  </div>
+  <div class="bignum">03</div><div class="speaktag"><b>Speaker 1</b> · 0:30</div>
+</section>
+
+<!-- 4 PEOPLE -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Cast · The System Under Test</div>
+    <table class="r d2">
+      <tr><th>Character</th><th>Role</th><th>One-line profile</th></tr>
+      <tr><td>Mark Zuckerberg</td><td>Leader / CEO</td><td>Genius coder; labels people, doesn't develop them</td></tr>
+      <tr><td>Eduardo Saverin</td><td>Team Member / CFO</td><td>Invested $19,000; loyal, business-minded, excluded later</td></tr>
+      <tr><td>Sean Parker</td><td>Mentor influence</td><td>Sees the big vision — but only coaches <i>Mark</i></td></tr>
+      <tr><td>Peter Thiel</td><td>Investor</td><td>Backed <i>potential</i>, not current revenue</td></tr>
+    </table>
+  </div>
+  <div class="bignum">04</div><div class="speaktag"><b>Speaker 2</b> · 1:00</div>
+</section>
+
+<!-- 5 LENS -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Our Analytical Lens</div>
+    <h2 class="r d2">The debug chain</h2>
+    <div class="chain r d3">
+      <span>SITUATION</span><i>→</i><span>BELIEF</span><i>→</i><span>RESPONSE</span><i>→</i><span>RESULT</span><i>→</i><span class="hl">GROWTH ALTERNATIVE</span><i>→</i><span>IMPACT</span>
+    </div>
+       <p class="lede r d4">For every scene, we run it through this chain — then rewrite the leader's response.</p>
+  </div>
+  <div class="bignum">05</div><div class="speaktag"><b>Speaker 2</b> · 0:15</div>
+</section>
+
+<!-- 6 FIXED MOMENT 1 -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Fixed Moment 1 · "You're breaking up with me?"</div>
+    <h2 class="r d2">Scene: opening bar scene with <em>Erica</em></h2>
+    <div class="chain r d3">
+      <span>Feedback given</span><i>→</i><span>"Problem is others"</span><i>→</i><span>Revenge (FaceMash)</span><i>→</i><span>Prove, not improve</span><i>→</i><span class="hl">FIXED</span>
+    </div>
+    <p class="lede r d4" style="margin-top:1.5rem">Feedback = <b style="color:#ff5b5b">attack</b>, not gift. He doesn't reflect — he builds a revenge website that same night.</p>
+  </div>
+  <div class="bignum">06</div><div class="speaktag"><b>Speaker 3</b> · 1:15</div>
+</section>
+
+<!-- 7 FIXED MOMENT 2 -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Fixed Moment 2 · The Account Freeze</div>
+    <h2 class="r d2">"Eduardo doesn't get the vision.<br><em>He's the problem.</em>"</h2>
+    <ul class="big r d3">
+      <li>Secret move to Palo Alto; his $19,000 spent without telling him</li>
+      <li>Response: freeze him out — <b>no call, no meeting, no feedback</b></li>
+      <li>Result: trust collapses on both sides</li>
+      <li>Fixed leaders <b>change the person</b>. Growth leaders <b>change the approach</b>.</li>
+    </ul>
+  </div>
+  <div class="bignum">07</div><div class="speaktag"><b>Speaker 3</b> · 1:00</div>
+</section>
+
+<!-- 8 DILUTION + FREEZE-FRAME -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Fixed Moment 3 · The Dilution ❄️ Freezeframe</div>
+    <div class="bigstat r d2">34% <small>→</small> 0.03%</div>
+    <ul class="big r d3" style="margin-top:1.4rem">
+      <li>Signed secretly. No warning.</li>
+      <li>Sean's label: <b>"He's sabotaging the entire company."</b></li>
+    </ul>
+    <p class="lede r d4" style="margin-top:1.4rem;color:#ffffff88;font-family:'JetBrains Mono',monospace;font-size:.85rem">[ ACTED SCENE — Members 4, 5 & 6 · ~40s · freeze on "I was your only friend." ]</p>
+  </div>
+  <div class="bignum">08</div><div class="speaktag"><b>Speaker 3 + Actors</b> · 1:30</div>
+</section>
+
+<!-- 9 TURNING POINT -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">The Turning Point & The Transformation</div>
+    <ul class="big r d2">
+      <li><b>Mark's turning point never comes</b> — he turns on Sean the same way (security, betrayal, no conversation)</li>
+      <li><b>Eduardo's arc:</b> loyal CFO → suspicious partner → adversary in court</li>
+      <li><b>Deposition:</b> <i>"If you guys were the inventors of Facebook, you'd have invented Facebook."</i> — zero accountability, zero learning</li>
+      <li><b>The Winklevoss twins:</b> also fixed — blame, wait, sue — never adapt</li>
+    </ul>
+  </div>
+  <div class="bignum">09</div><div class="speaktag"><b>Speaker 4</b> · 1:00</div>
+</section>
+
+<!-- 10 GROWTH MOMENTS -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Growth Mindset Moments · They Do Exist</div>
+    <div class="cards r d2">
+      <div class="card"><div class="ic"></div><h3>Sean's coaching</h3><p><em>"A million dollars isn't cool. A billion dollars is cool."</em> — expanding what's possible</p></div>
+      <div class="card"><div class="ic"></div><h3>"Drop the 'the.' Just Facebook."</h3><p>Small feedback, big iteration</p></div>
+      <div class="card"><div class="ic"></div><h3>Mark ships & iterates</h3><p>"We don't even know what it is yet" — learning posture toward the <em>product</em></p></div>
+      <div class="card"><div class="ic"></div><h3>Thiel: $500K for 7%</h3><p>Backing <em>potential</em>, not current results</p></div>
+    </div>
+    <p class="lede r d3" style="margin-top:1.4rem">Irony: <b style="color:#fff">growth about the product, fixed about people</b>. He debugged code endlessly — never himself.</p>
+  </div>
+  <div class="bignum">10</div><div class="speaktag"><b>Speaker 5</b> · 1:00</div>
+</section>
+
+<!-- 11 WHAT IF 1 -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">What If #1 · Feedback Instead of Freeze</div>
+    <table class="r d2">
+      <tr><td>Situation</td><td>Eduardo freezes the account</td></tr>
+      <tr><td>Actual response</td><td>Freeze him out; secret dilution later</td></tr>
+      <tr><td>Alternative</td><td>Honest feedback + redefined role</td></tr>
+      <tr><td>Strategy</td><td>1:1: "We failed to include you — but the CFO role has changed. Here's training, here's a clear equity plan."</td></tr>
+      <tr><td>Impact</td><td>Harvard CFO → Silicon Valley CFO; trust retained</td></tr>
+    </table>
+  </div>
+  <div class="bignum">11</div><div class="speaktag"><b>Speaker 6</b> · 0:45</div>
+</section>
+
+<!-- 12 WHAT IF 2 -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">What If #2 · Mentor the Whole Team</div>
+    <table class="r d2">
+      <tr><td>Situation</td><td>Sean influences Mark; Eduardo isolated in New York</td></tr>
+      <tr><td>Actual response</td><td>Information asymmetry; decisions without the CFO</td></tr>
+      <tr><td>Alternative</td><td>Growth mentorship for <i>everyone</i></td></tr>
+      <tr><td>Strategy</td><td>Weekly all-founders meeting · transparent cap table · Sean coaches Eduardo too · rotate him through Palo Alto</td></tr>
+      <tr><td>Impact</td><td>No asymmetry → no paranoia → faster, unified decisions</td></tr>
+    </table>
+  </div>
+  <div class="bignum">12</div><div class="speaktag"><b>Speaker 6</b> · 0:45</div>
+</section>
+
+<!-- 13 WHAT IF 3 -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">What If #3 · The Winklevoss Conflict</div>
+    <table class="r d2">
+      <tr><td>Situation</td><td>Twins claim Mark stole their idea</td></tr>
+      <tr><td>Actual response</td><td>Stall, delay, mock</td></tr>
+      <tr><td>Alternative</td><td>Acknowledge contribution, negotiate early</td></tr>
+      <tr><td>Strategy</td><td>Early IP discussion — credit, advisory role, or settlement before resentment hardened</td></tr>
+      <tr><td>Impact</td><td>Small honest settlement in 2004 ≪ $65M in 2008 + 4 years of distraction</td></tr>
+    </table>
+  </div>
+  <div class="bignum">13</div><div class="speaktag"><b>Speaker 6</b> · 0:45</div>
+</section>
+
+<!-- 14 TWO TIMELINES -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Impact · Two Timelines</div>
+    <div class="cols r d2">
+      <div class="panel bad"><h3>What actually happened</h3><ul>
+        <li>Co-founder erased, sued for years</li>
+        <li>Trust destroyed at every level</li>
+        <li>Mark wins the money, loses the friend</li>
+        <li>"I was your only friend."</li>
+      </ul></div>
+      <div class="panel good"><h3>With a growth-minded leader</h3><ul>
+        <li>Co-founder developed, retained</li>
+        <li>Culture of feedback from day one</li>
+        <li>Mark wins the money <b>and</b> keeps his friend</li>
+        <li>"We built this together."</li>
+      </ul></div>
+    </div>
+    <p class="lede r d3" style="margin-top:1.2rem">The product succeeded in both timelines. Growth leadership changes the <b style="color:#fff">cost</b> of success.</p>
+  </div>
+  <div class="bignum">14</div><div class="speaktag"><b>Speaker 7</b> · 0:45</div>
+</section>
+
+<!-- 15 LESSONS -->
+<section class="slide">
+  <div class="content">
+    <div class="kicker r d1">Lessons for Future Engineers</div>
+    <div class="code r d2" style="max-width:70ch">
+      <div><span class="ln">01</span><span class="kw">if</span> (teammate.fails) → <span class="str">debug the process</span>, not the person</div>
+      <div><span class="ln">02</span><span class="kw">never</span> let a label replace a real conversation</div>
+      <div><span class="ln">03</span><span class="kw">growth(product) !== growth(people)</span> <span class="cm">// Mark had one, not the other</span></div>
+      <div><span class="ln">04</span><span class="kw">ask:</span> <span class="str">"What can I change in MY approach?"</span></div>
+    </div>
+    <p class="lede r d3" style="margin-top:1.4rem"><b style="color:#fff">Mark wasn't a bad engineer. He just refused to debug himself.</b></p>
+  </div>
+  <div class="bignum">15</div><div class="speaktag"><b>Speaker 7</b> · 0:45</div>
+</section>
+
+<!-- 16 THANK YOU -->
+<section class="slide">
+  <div class="content" style="align-items:center;text-align:center">
+    <div class="kicker r d1" style="margin-bottom:2rem">End of Case Study</div>
+    <h1 class="r d2">QUESTIONS<em>?</em></h1>
+    <p class="lede r d3" style="margin-top:1.5rem">Group ___ · The Social Network · Growth vs Fixed Mindset</p>
+    <p class="lede r d4" style="margin-top:2rem;color:#ffffff66;font-family:'JetBrains Mono',monospace;font-size:.8rem">// Thank you — all members on stage for Q&A</p>
+  </div>
+  <div class="bignum">16</div><div class="speaktag"><b>All Members</b> · Q&A</div>
+</section>
+
+</div>
+
+<div class="hud">
+  <span id="counter">01 / 16</span>
+  <div class="dots" id="dots"></div>
+  <span>↑↓ / ←→ / Space / Swipe</span>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsBox=document.getElementById('dots'),counter=document.getElementById('counter'),bar=document.getElementById('bar');
+  let cur=0
+
+  ;
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot';d.onclick=()=>go(i);dotsBox.appendChild(d)});
+  const dots=[...dotsBox.children];
+
+  function go(n){
+    cur=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
+    dots.forEach((d,i)=>d.classList.toggle('on',i===cur));
+    counter.textContent=String(cur+1).padStart(2,'0')+' / '+slides.length;
+    bar.style.width=((cur+1)/slides.length*100)+'%';
+  }
+  go(0);
+
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();go(cur+1)}
+    if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(cur-1)}
+    if(e.key==='Home')go(0);
+    if(e.key==='End')go(slides.length-1);
+  });
+
+  let tx=null;
+  addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+  addEventListener('touchend',e=>{
+    if(tx===null)return;
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>50)go(cur+(dx<0?1:-1));
+    tx=null;
+  },{passive:true});
+
+  addEventListener('wheel',(()=>{let lock=false;return e=>{
+    if(lock||Math.abs(e.deltaY)<25)return;lock=true;
+    go(cur+(e.deltaY>0?1:-1));
+    setTimeout(()=>lock=false,700);
+  }})(),{passive:true});
+
+  addEventListener('resize',()=>go(cur));
+</script>
+</body>
+</html>
+
